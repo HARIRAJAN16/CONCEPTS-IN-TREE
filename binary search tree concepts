@@ -1,0 +1,135 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Node{
+    public:
+    Node* left;
+    int key;
+    Node* right;
+};
+Node* newNode(int data){
+    Node* n=new Node();
+    n->key=data;
+    n->left=NULL;
+    n->right=NULL;
+    return n;
+}
+Node* insert(Node*root,int data){
+    Node* nn=newNode(data);
+    if(root==NULL){
+        root=nn;
+        return root;
+    }
+    else{
+        queue<Node*>q;
+        q.push(root);
+        while(!q.empty()){
+            Node* present=q.front();
+            q.pop();
+            if(present->left==NULL && present->key>nn->key){
+                present->left=nn;
+                break;
+            }
+            else{
+                q.push(present->left);
+            }
+            if(present->right==NULL && present->key<nn->key){
+                present->right=nn;
+                break;
+            }
+            else{
+                q.push(present->right);
+            }
+        }
+    }
+    return root;
+}
+Node* minimum(Node* root){
+    if(root->left==NULL){
+        return root;
+    }
+    else
+     return minimum(root->left);
+}
+
+Node* deleteNode(Node* root,int data){
+    if(root==NULL){
+        cout<<"Value not found in BST";
+        return NULL;
+    }
+    if(data<root->key){
+        root->left=deleteNode(root->left,data);
+    }
+    else if(data>root->key){
+        root->right=deleteNode(root->right,data);
+    }
+    else{
+        if(root->left!=NULL&&root->right!=NULL){
+            Node* temp=root;
+            Node* minNodeForRight=minimum(temp->right);
+            root->key=minNodeForRight->key;
+            root->right=deleteNode(root->right,minNodeForRight->key);
+        }
+        else if(root->left!=NULL){
+            root=root->left;
+        }
+        else if(root->right!=NULL){
+            root=root->right;
+        }
+        else{
+            root=NULL;
+        }
+    }
+    return root;
+}
+//display function or level order
+Node* display(Node* root){
+    if(root==NULL){
+        cout<<"Tree Empty";
+    }
+    queue<Node*>queue;
+    queue.push(root);
+    while(!queue.empty()){
+        Node*front=queue.front();
+        queue.pop();
+        cout<<front->key<<"->";
+        if(front->left!=NULL){
+            queue.push(front->left);
+        }
+        if(front->right!=NULL){
+            queue.push(front->right);
+        }
+    }
+    cout<<"NULL";
+    return root;
+}
+
+Node* search(Node* root, int data) {
+    if (root == NULL) {
+        cout << "Not Found  ";
+        return root;
+    }
+    else if (root->key == data) {
+        cout << "Found  ";
+    } else if (root->key>data) {
+        search(root->left, data);
+    } else {
+        root->right=search(root->right, data);
+    }
+}
+
+
+
+int main() {
+	Node* root=NULL;
+	root=insert(root,54);
+	root=insert(root,56);
+	root=insert(root,7);
+	root=insert(root,2);
+	root=insert(root,70);
+	root=insert(root,5);
+	search(root,7);
+	root=deleteNode(root,56);
+	
+	display(root);
+}
